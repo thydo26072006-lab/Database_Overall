@@ -1,0 +1,32 @@
+{
+  "fix/nguoi5/01_Truy_van_4.sql": {
+    "total_lines": 24,
+    "explained_nonempty_lines": 24,
+    "sha256": "2d2ceef692016acc026e3b15c7960c10125c68257ba1427401dd20c227123191"
+  },
+  "fix/nguoi5/02_Truy_van_5.sql": {
+    "total_lines": 34,
+    "explained_nonempty_lines": 34,
+    "sha256": "63053e030ef74fa64b9df14d5e89a0aeabe31b78c68733157afa93df4570ccfc"
+  },
+  "fix/nguoi5/03_Ham_1.sql": {
+    "total_lines": 65,
+    "explained_nonempty_lines": 60,
+    "sha256": "9a5486b35f4557138cf924aa8cf440e2e7bc0aa56a54ee01ef6016bf901cd649"
+  },
+  "fix/nguoi5/04_Ham_2.sql": {
+    "total_lines": 47,
+    "explained_nonempty_lines": 47,
+    "sha256": "dafef10edf453aa3d957938b39f7982625ba757f6631eee1bb2998172f9a26db"
+  },
+  "fix/nguoi5/05_Demo_Ham_2_ban_giao.sql": {
+    "total_lines": 18,
+    "explained_nonempty_lines": 18,
+    "sha256": "9be70fc73b5ea8a8ab49b0b694151d135fd7e8a21c170320a2770236139806eb"
+  },
+  "fix/nguoi3/07_Demo_Ham_1.sql": {
+    "total_lines": 15,
+    "explained_nonempty_lines": 15,
+    "sha256": "f4e885f17211accfcef68866c26f11e62117c335fd512f6c39ce9e1cce11c722"
+  }
+}
