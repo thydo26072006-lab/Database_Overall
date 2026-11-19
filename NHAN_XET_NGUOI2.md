@@ -1,7 +1,5 @@
 # Nhận xét bài Người 2
 
-SQL Server đã tạo được 23 bảng, hai trigger và thủ tục UPDATE của Người 2. Điểm cần sửa là cấu trúc bảng liên hệ nhân viên theo Excel. Phần demo cần bổ sung các tệp dùng chung và minh chứng chạy với dữ liệu mẫu.
-
 ## Đối chiếu với đề và phân công
 
 | Phần được giao | Kết quả rà soát |
@@ -11,13 +9,13 @@ SQL Server đã tạo được 23 bảng, hai trigger và thủ tục UPDATE c�
 | 2.2.b — Trigger 2 và demo | [`02_Trigger_2.sql`](nguoi2/02_Trigger_2.sql) gồm hai trigger phối hợp trên `MON` và `SIZE_MON`. Món mới sinh quy cách nháp `S` hoặc `TC` theo loại. Cặp loại món–size sai bị chặn và món đang bán phải giữ ít nhất một quy cách đang bán. [`04_Demo.sql`](nguoi2/04_Demo.sql) có ca thêm nhiều món cùng lúc, size sai loại và ngừng size đang bán cuối cùng. |
 | 2.1.b — Thủ tục UPDATE | [`03_Thu_tuc_UPDATE.sql`](nguoi2/03_Thu_tuc_UPDATE.sql) nhận mã, tên và mã cha, kiểm tra đầu vào trước khi thu hẹp kiểu và trả dòng cập nhật qua `OUTPUT`. Trigger 1 của Người 1 bảo vệ chu trình nhiều cấp và trả `51010`. Người 4 gọi đúng thủ tục này trong [demo CRUD chung](nguoi4/05_Demo_CRUD.sql). |
 
-**Bản được đối chiếu.** Năm khối SQL trong [Word Người 2](nguoi2/Bao_cao_Nguoi2_FIX.docx) khớp từng dòng với năm tệp SQL rời. Word còn chứa các phần mã đặt tên `chung/03_Bao_ve_nghiep_vu.sql`, `chung/04_Kho_va_khuyen_mai.sql`, `chung/05a_Dong_mon_va_topping.sql` và `chung/05_Du_lieu_mau.sql`. Các phần này hiện có dưới dạng mã trong Word. Bộ tệp rời đang kiểm thiếu thư mục `chung/`. Phạm vi nhận xét là bản `Assignment_New_FIX` và log chạy riêng Người 2. [Tài liệu phân công](Phan_cong_BTL2_Database_SQL_Server.docx)
+Thư mục `nguoi2/` trong gói cập nhật chỉ có năm tệp SQL. `BAO_CAO.md`, `Bao_cao_Nguoi2_FIX.docx` và hai lưu đồ được đối chiếu từ bản lưu trước. Trong Word, năm khối SQL khớp với các câu lệnh của năm tệp rời. Word còn chứa các đoạn mã cho `chung/03_Bao_ve_nghiep_vu.sql`, `chung/04_Kho_va_khuyen_mai.sql`, `chung/05a_Dong_mon_va_topping.sql` và `chung/05_Du_lieu_mau.sql`. Các tệp chạy tương ứng cần được bổ sung vào thư mục `chung/`. [Bản lưu trước](../../../nguoi1.zip) · [Tài liệu phân công](Phan_cong_BTL2_Database_SQL_Server.docx)
 
 ## Nội dung cần hoàn thiện theo đề
 
 ### 1. Ảnh và diễn giải kết quả trong báo cáo
 
-Word đã có SQL dạng chữ và hai lưu đồ. Khi bổ sung minh chứng, nên ghép ảnh với kết quả tương ứng để người đọc thấy rõ thao tác và dữ liệu trả về.
+Word trong bản lưu trước đã có SQL dạng chữ và hai lưu đồ. Khi bổ sung minh chứng cho bản nộp, nên đặt ảnh cạnh đoạn diễn giải thao tác và kết quả tương ứng.
 
 - **Mục 1.1.a và 1.1.b.** Chèn ảnh các bảng và ràng buộc được tạo. Có thể dùng ca `SoKhach = 0` kỳ vọng lỗi `547` để minh họa `CHECK` sau khi nạp dữ liệu mẫu và chạy lại demo.
 - **Mục 1.1.c.** Chạy lại trên cùng bộ dữ liệu có bản ghi khớp các truy vấn. Chụp Actual Execution Plan và phần Messages trước/sau cho I1–I5. Lượt hiện có cho `logical reads = 0` ở cả hai lượt, các truy vấn đều trả rỗng. Chỉ diễn giải hiệu quả từ số liệu trên dữ liệu đã nạp. [Log demo chỉ mục](BTL2_Original_20261119_222711_4f58c0ea/nguoi2_05_Demo_chi_muc.sql.log)
@@ -28,8 +26,8 @@ Theo mẫu nhận xét Người 1, báo cáo cần ít nhất một ảnh bao qu
 
 ### 2. Lưu đồ và mô tả cần khớp với SQL
 
-- **Lưu đồ UPDATE.** Code kiểm mã cha trùng mã danh mục và trả `51204` trước khi mở giao dịch hoặc đặt savepoint. Lưu đồ hiện gộp điều kiện này vào bước sau khi khóa. Nên đưa nhánh kiểm về đúng vị trí và bỏ chú thích về `WHILE` ở cuối hình vì thủ tục này xử lý bằng các nhánh điều kiện. [Lưu đồ UPDATE](nguoi2/hinh/luu_do_1.png) · [Thủ tục UPDATE](nguoi2/03_Thu_tuc_UPDATE.sql#L26)
-- **Lưu đồ Trigger 2.** Hình hiện gộp các thao tác trên `MON` và `SIZE_MON` vào một luồng. Nên làm rõ nhánh tạo size nháp chỉ diễn ra khi thêm món và bổ sung nhánh `51211` khi đổi loại món còn quy cách. Phần kiểm cặp loại món–size và bảo vệ size đang bán cuối cùng thuộc trigger trên `SIZE_MON`. [Lưu đồ Trigger 2](nguoi2/hinh/luu_do_2.png) · [SQL Trigger 2](nguoi2/02_Trigger_2.sql)
+- **Lưu đồ UPDATE.** Code kiểm mã cha trùng mã danh mục và trả `51204` trước khi mở giao dịch hoặc đặt savepoint. Lưu đồ trong bản lưu trước gộp điều kiện này vào bước sau khi khóa. Nên đưa nhánh kiểm về đúng vị trí và bỏ chú thích về `WHILE` ở cuối hình vì thủ tục này xử lý bằng các nhánh điều kiện. [Thủ tục UPDATE](nguoi2/03_Thu_tuc_UPDATE.sql#L26)
+- **Lưu đồ Trigger 2.** Hình trong bản lưu trước gộp các thao tác trên `MON` và `SIZE_MON` vào một luồng. Nên làm rõ nhánh tạo size nháp chỉ diễn ra khi thêm món và bổ sung nhánh `51211` khi đổi loại món còn quy cách. Phần kiểm cặp loại món–size và bảo vệ size đang bán cuối cùng thuộc trigger trên `SIZE_MON`. [SQL Trigger 2](nguoi2/02_Trigger_2.sql)
 
 ## Nhận xét về SQL và ca kiểm thử
 
@@ -52,8 +50,10 @@ Trigger tự tạo `TC` khi thêm topping nháp. Điều kiện chặn mất quy
 
 - Đóng gói lại các tệp `chung/` từ bản nguồn của nhóm để có seed và các ràng buộc hỗ trợ. View `dbo.v_N2_LuongNhanVien` đã có mã trong phần `03_Bao_ve_nghiep_vu.sql` đính kèm Word. Cần thêm định nghĩa `dbo.usp_FIX_Test` từ bản ghép để chạy các ca trong `04_Demo.sql`.
 - Đổi số mục demo chỉ mục trong Word và Markdown từ **1.2** thành **1.1.c** theo tài liệu phân công. Người 3 sở hữu mã tạo I1–I5, Người 2 phụ trách đo trước/sau. Hai script hiện có cùng định nghĩa chỉ mục.
-- Cập nhật đoạn tình trạng kiểm chứng trong Word theo lượt chạy thực tế. Có thể dùng log hiện tại để ghi nhận đã cài được các đối tượng. Ảnh demo nghiệp vụ và số liệu hiệu năng cần đến từ lượt chạy có đủ phụ thuộc và dữ liệu.
+- Khi đóng gói bản nộp, bổ sung lại Word, Markdown và hai lưu đồ, rồi cập nhật tình trạng kiểm chứng theo lượt chạy thực tế. Ảnh demo nghiệp vụ và số liệu hiệu năng cần đến từ lượt chạy có đủ phụ thuộc và dữ liệu.
 
 ## Mức độ kiểm chứng
 
-Đã đối chiếu phân công, SQL, sheet 07 của Excel, Word, hai lưu đồ và log thực thi. Nhật ký SQL Server 2025 ghi **4/5 tệp của Người 2 hoàn tất** và xác nhận SHA-256 của cả 8 tệp đã đưa vào lượt chạy. `04_Demo.sql` ghi 22 lần cùng lỗi `Msg 2812` vì thiếu `dbo.usp_FIX_Test`, nên chưa có kết quả đạt hay trượt cho từng ca nghiệp vụ. Demo chỉ mục hoàn tất trên bảng rỗng. Các góp ý về điều kiện kiểm lương, đổi cha và quy cách TC dựa trên đọc mã nguồn, chưa chạy đối chứng có seed. [Tổng hợp lượt chạy](BTL2_Original_20261119_222711_4f58c0ea/summary.csv) · [Log lỗi demo nghiệp vụ](BTL2_Original_20261119_222711_4f58c0ea/nguoi2_04_Demo.sql.log)
+ScriptDom cho SQL Server 2025 đã kiểm tra lại năm tệp cập nhật và 22 đoạn SQL động trong `04_Demo.sql`, kết quả 0 lỗi cú pháp. Lượt kết nối SQL Server từ phiên rà soát dừng ở bước xác thực Windows, nên phần thực thi dưới đây lấy từ log ngày 19/11/2026 của bản trước.
+
+Lượt chạy đó xác nhận tạo được 23 bảng, hai trigger và thủ tục UPDATE của Người 2. Tổng cộng 4/5 tệp hoàn tất. `04_Demo.sql` báo 22 lần cùng lỗi `Msg 2812` vì thiếu `dbo.usp_FIX_Test`, nên chưa có kết quả đạt hay trượt cho từng ca nghiệp vụ. Demo chỉ mục hoàn tất trên bảng rỗng. Các góp ý về điều kiện kiểm lương, đổi cha và quy cách TC dựa trên đọc mã nguồn, chưa chạy đối chứng có dữ liệu mẫu. [Tổng hợp lượt chạy 19/11](BTL2_Original_20261119_222711_4f58c0ea/summary.csv) · [Log lỗi demo nghiệp vụ](BTL2_Original_20261119_222711_4f58c0ea/nguoi2_04_Demo.sql.log)
