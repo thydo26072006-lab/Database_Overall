@@ -1,5 +1,8 @@
 # Nhận xét kiểm tra chéo Người 5
 
+## Tổng quan sau khi chạy
+Ko gặp lỗi khi khởi tạo và chạy các file SQL của người 5. Code hoàn chỉnh, ở file chung chạy đúng các nội dung tổng hợp từ các phần của từng người.
+
 ## 01_Truy_van_4.sql
 
 File cho thấy truy vấn thống kê đúng số món và số lựa chọn size đang bán theo từng danh mục. Cách dùng `COUNT(DISTINCT MaMon)` và `COUNT_BIG(*)` hợp lý, vì số món và số cặp món–size là hai số khác nhau. Danh mục chưa có món đang bán sẽ không hiện trong kết quả; nếu muốn hiện cả danh mục đó thì cần chỉnh truy vấn.
