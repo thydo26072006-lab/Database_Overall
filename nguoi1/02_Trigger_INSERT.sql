@@ -111,7 +111,16 @@ BEGIN
            AND NOT EXISTS (SELECT 1 FROM dbo.DANH_MUC_MON WHERE MaDanhMuc = @MaCha)
             THROW 51008, N'Danh muc cha chua ton tai.', 1;
 
+        DECLARE @DanhMucVuaThem TABLE
+        (
+            MaDanhMuc VARCHAR(30),
+            TenDanhMuc NVARCHAR(200),
+            MaDanhMucCha VARCHAR(30)
+        );
+
         INSERT INTO dbo.DANH_MUC_MON (MaDanhMuc, TenDanhMuc, MaDanhMucCha)
+        OUTPUT inserted.MaDanhMuc, inserted.TenDanhMuc, inserted.MaDanhMucCha
+        INTO @DanhMucVuaThem (MaDanhMuc, TenDanhMuc, MaDanhMucCha)
         VALUES (@Ma, CONVERT(NVARCHAR(200), @TenDanhMuc), @MaCha);
 
         -- Chi COMMIT giao dich do chinh thu tuc mo.
@@ -119,8 +128,7 @@ BEGIN
             COMMIT TRANSACTION;
 
         SELECT MaDanhMuc, TenDanhMuc, MaDanhMucCha
-        FROM dbo.DANH_MUC_MON
-        WHERE MaDanhMuc = @Ma;
+        FROM @DanhMucVuaThem;
     END TRY
     BEGIN CATCH
         IF @SoGiaoDichBanDau = 0 AND XACT_STATE() <> 0
