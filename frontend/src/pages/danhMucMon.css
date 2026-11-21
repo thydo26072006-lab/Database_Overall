@@ -1,0 +1,289 @@
+.dm-page {
+  --dm-ink: #192a25;
+  --dm-muted: #51645c;
+  --dm-line: #dce4de;
+  --dm-primary: #245740;
+  --dm-red: #9b3025;
+  min-height: 100vh;
+  padding: clamp(1rem, 5vw, 4.5rem) clamp(1rem, 4vw, 3rem);
+  color: var(--dm-ink);
+  background: #f3f5f1;
+  font-family: system-ui, sans-serif;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.dm-page,
+.dm-page * {
+  box-sizing: border-box;
+}
+
+.dm-layout {
+  max-width: 68rem;
+  margin-inline: auto;
+}
+
+.dm-heading,
+.dm-panel-header,
+.dm-dialog-header,
+.dm-dialog-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.dm-heading {
+  align-items: end;
+  margin-block-end: 1.5rem;
+}
+
+.dm-context,
+.dm-count {
+  margin: 0;
+  color: var(--dm-muted);
+  font-weight: 600;
+}
+
+.dm-heading h1 {
+  margin: 0.125rem 0 0;
+  font-size: clamp(1.875rem, 5vw, 2.75rem);
+  line-height: 1.18;
+  letter-spacing: -0.025em;
+}
+
+.dm-panel {
+  border: 1px solid var(--dm-line);
+  border-radius: 1rem;
+  background: white;
+  box-shadow: 0 10px 30px #202c2310;
+}
+
+.dm-panel-header {
+  padding: 1rem 1.25rem;
+}
+
+.dm-table-scroll {
+  overflow: auto;
+  border-radius: 0 0 1rem 1rem;
+}
+
+.dm-page table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.dm-page th,
+.dm-page td {
+  padding: 0.75rem 1.25rem;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+
+.dm-page thead th {
+  color: #3e534b;
+  background: #edf2ee;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.dm-page tbody tr + tr {
+  border-top: 1px solid var(--dm-line);
+}
+
+.dm-category {
+  font-weight: 600;
+}
+
+.dm-parent {
+  color: var(--dm-muted);
+}
+
+.dm-code {
+  color: #35594a;
+  font-size: 0.83rem;
+  font-weight: 600;
+}
+
+.dm-page .dm-actions {
+  width: 1%;
+  text-align: end;
+  white-space: nowrap;
+}
+
+.dm-page .dm-empty {
+  padding: 2.5rem 1rem;
+  text-align: center;
+  color: var(--dm-muted);
+}
+
+.dm-button,
+.dm-text-button,
+.dm-close {
+  cursor: pointer;
+  font: inherit;
+  font-weight: 650;
+}
+
+.dm-button {
+  padding: 0.55rem 0.9rem;
+  border: 1px solid transparent;
+  border-radius: 0.55rem;
+  white-space: nowrap;
+}
+
+.dm-primary {
+  background: var(--dm-primary);
+  color: white;
+}
+
+.dm-primary:hover:enabled {
+  background: #1c4533;
+}
+
+.dm-secondary {
+  background: white;
+  color: var(--dm-primary);
+  border-color: var(--dm-line);
+}
+
+.dm-secondary:hover:enabled,
+.dm-text-button:hover:enabled,
+.dm-close:hover:enabled {
+  background: #edf2ee;
+}
+
+.dm-danger {
+  background: var(--dm-red);
+  color: white;
+}
+
+.dm-danger:hover:enabled {
+  background: #81261d;
+}
+
+.dm-text-button,
+.dm-close {
+  padding: 0.4rem 0.5rem;
+  background: transparent;
+  color: var(--dm-primary);
+  border: 0;
+  border-radius: 0.4rem;
+}
+
+.dm-delete {
+  color: var(--dm-red);
+  margin-inline-start: 0.3rem;
+}
+
+.dm-page button:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+.dm-page :focus-visible {
+  outline: 2px solid var(--dm-primary);
+  outline-offset: 3px;
+}
+
+.dm-message {
+  margin: 0 0 0.875rem;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid;
+  border-radius: 0.55rem;
+  overflow-wrap: anywhere;
+}
+
+.dm-message-success {
+  background: #e7f4ea;
+  border-color: #bddcc6;
+  color: #22553b;
+}
+
+.dm-message-error {
+  background: #fff1ed;
+  border-color: #f3c9be;
+  color: #812c20;
+}
+
+.dm-error-code {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+}
+
+.dm-dialog {
+  width: min(30rem, calc(100% - 2rem));
+  max-height: calc(100% - 2rem);
+  padding: 1.5rem;
+  color: var(--dm-ink);
+  background: white;
+  border: 1px solid var(--dm-line);
+  border-radius: 1rem;
+  box-shadow: 0 15px 60px #15221b32;
+}
+
+.dm-dialog::backdrop {
+  background: #142a21a8;
+}
+
+.dm-dialog-header h2 {
+  margin: 0;
+  font-size: 1.375rem;
+}
+
+.dm-close {
+  line-height: 1;
+  font-size: 1.5rem;
+}
+
+.dm-fields {
+  display: grid;
+  gap: 0.9rem;
+  margin: 1.2rem 0;
+  padding: 0;
+  border: 0;
+}
+
+.dm-fields label {
+  display: grid;
+  gap: 0.35rem;
+  font-weight: 600;
+}
+
+.dm-fields :is(input, select) {
+  width: 100%;
+  padding: 0.6rem 0.7rem;
+  min-height: 2.7rem;
+  border: 1px solid #b8c9be;
+  border-radius: 0.45rem;
+  background: white;
+  color: var(--dm-ink);
+  font: inherit;
+  font-weight: 400;
+}
+
+.dm-fields input[readonly] {
+  background: #f3f5f1;
+  color: var(--dm-muted);
+}
+
+.dm-confirm {
+  margin-block: 1rem 1.4rem;
+}
+
+.dm-dialog-footer {
+  justify-content: end;
+  gap: 0.6rem;
+}
+
+@media (max-width: 40rem) {
+  .dm-heading {
+    flex-wrap: wrap;
+    align-items: start;
+  }
+
+  .dm-page table {
+    min-width: 37rem;
+  }
+}
