@@ -92,3 +92,144 @@ Nhóm phải hiểu cả nội dung không được phân công vì giảng viê
 ---
 
 Phân công BTL2 Hệ cơ sở dữ liệu – SQL Server | Hoàn thành trước 17/11/2026
+
+---
+
+# PHẦN 3 – HIỆN THỰC ỨNG DỤNG (10 ĐIỂM)
+
+**Chủ đề:** Hệ thống quản lý gọi món / đặt món.  
+**Công nghệ đề xuất thống nhất:** React (Frontend), Node.js + Express (Backend), Microsoft SQL Server (Database).  
+**Hạn hoàn thành toàn nhóm: 23:00, ngày 26/11/2026 (trước ngày 27/11/2026).**
+
+> Phần 3 tiếp tục sử dụng các Stored Procedure, Function và Trigger đã thực hiện trong Phần 2. Đây là phân chia **khối lượng thực hiện**; việc ghi điểm vào bảng kê phải đối chiếu mẫu của giảng viên. Không thay thế các deadline của Phần 1–2 ở trên.
+
+## 8. Nguyên tắc phân chia và yêu cầu đối chiếu
+
+- **Yêu cầu 1 (2,5đ):** Màn hình hiển thị dữ liệu, thêm, cập nhật và xoá **bằng ba Stored Procedure của mục 2.1**.
+- **Yêu cầu 2 (2,5đ):** Màn hình hiển thị dữ liệu và thực hiện các thao tác có liên quan đến **một trong hai Trigger ở mục 2.2**.
+- **Yêu cầu 3 (2,0đ):** Màn hình sử dụng Stored Procedure hoặc Function đã xây dựng ở Phần 2 theo yêu cầu của đề bài.
+- **Hỏi đáp – demo (2,0đ):** Ứng dụng chạy được, dữ liệu cập nhật thật trong SQL Server, các thành viên hiểu quy trình đã làm.
+- **Yêu cầu 1 và 2 không được dùng trùng màn hình.** Yêu cầu 3 có thể dùng chung màn hình với một trong hai yêu cầu trước nếu nghiệp vụ phù hợp.
+- Giữ nguyên tên bảng, thuộc tính, tham số, điều kiện nghiệp vụ và đối tượng T-SQL đã thống nhất; không viết lại toàn bộ logic ở Frontend để thay cho thủ tục/hàm.
+
+## 9. Bảng phân công nhiệm vụ và deadline Phần 3
+
+| Thành viên | Công việc chính | Liên kết Phần 2 | Đầu ra bàn giao | Deadline |
+| --- | --- | --- | --- | --- |
+| **Người 1** | Màn hình CRUD: danh sách, thêm, cập nhật, xoá; kiểm tra thông báo và lỗi | 2.1.a INSERT (Người 1); tích hợp UPDATE (Người 2), DELETE (Người 3) | Màn hình CRUD, API, ca kiểm thử đúng/sai, ảnh trước/sau | **24/11/2026 – 23:00** |
+| **Người 2** | Màn hình nghiệp vụ Trigger riêng biệt; thực hiện DML và chứng minh Trigger kích hoạt | 2.2.a hoặc 2.2.b; ưu tiên Trigger 2 nếu phù hợp | Màn hình Trigger, API, dữ liệu minh chứng, ảnh và ca kiểm thử | **24/11/2026 – 23:00** |
+| **Người 3** | Màn hình nhập tham số, gọi Stored Procedure / Function, hiển thị kết quả và lỗi | Ưu tiên 2.3.a Thủ tục 1; có thể chọn đối tượng khác đã hoàn thành nếu phù hợp | Màn hình xử lý nghiệp vụ, API, kết quả trả về và ảnh demo | **24/11/2026 – 23:00** |
+| **Người 4** | Giao diện chung, menu điều hướng, tích hợp Frontend; Sequence Diagram / Flowchart, báo cáo mục 3.2 | Phối hợp Người 1–3, đối chiếu demo CRUD mục 2.1 | UI thống nhất, sơ đồ FE–BE–DB, nội dung báo cáo 3.2 | **25/11/2026 – 23:00** |
+| **Người 5** | Backend chung, cấu hình SQL Server, quy ước API, kiểm thử tích hợp, báo cáo 3.1 và chuẩn bị demo | Liên kết toàn bộ Phần 2, đặc biệt Function 2.4 | Source chạy chung, README hướng dẫn chạy, báo cáo 3.1, bộ demo | **26/11/2026 – 12:00** |
+| **Cả nhóm** | Kiểm thử đầu-cuối; kiểm tra Word, README, ảnh minh chứng và luyện hỏi đáp | Toàn bộ | Bản ứng dụng và báo cáo cuối cùng | **26/11/2026 – 23:00** |
+
+## 10. Mô tả công việc và đầu ra theo từng người
+
+### Người 1 – Màn hình CRUD (Yêu cầu 1)
+
+- Chốt **một bảng dữ liệu chung** đúng với các Stored Procedure INSERT / UPDATE / DELETE mục 2.1. Không tự chuyển sang bảng `MON` nếu ba thủ tục hiện tại thao tác trên bảng khác.
+- Xây dựng danh sách dữ liệu từ SQL Server, form thêm/sửa và chức năng xoá có xác nhận.
+- Backend phải gọi **đúng ba Stored Procedure đã thực hiện** (không thay bằng INSERT / UPDATE / DELETE trực tiếp để lấy điểm yêu cầu 1).
+- Sau mỗi thao tác tải lại dữ liệu thật; hiển thị thành công, kiểm tra điều kiện và thông báo lỗi.
+- Bàn giao source, endpoint API, test đúng/sai, ảnh trước/sau và mô tả nghiệp vụ cho Người 4.
+- **Deadline: 23:00 ngày 24/11/2026.**
+
+### Người 2 – Màn hình Trigger (Yêu cầu 2)
+
+- Chọn đúng một Trigger mục 2.2; màn hình nghiệp vụ **khác** màn hình CRUD của Người 1.
+- Có chức năng xem dữ liệu và thao tác thêm, cập nhật, xoá phù hợp nghiệp vụ để kích hoạt Trigger.
+- Trigger **tự kích hoạt khi thực thi DML trên SQL Server**, không gọi Trigger trực tiếp từ Frontend.
+- Chứng minh dữ liệu bảng chính và bảng liên quan thay đổi trước/sau; kiểm thử trường hợp hợp lệ và lỗi.
+- Bàn giao source, API, tên Trigger, thao tác kích hoạt, ca kiểm thử và ảnh minh chứng.
+- **Deadline: 23:00 ngày 24/11/2026.**
+
+### Người 3 – Màn hình Stored Procedure / Function (Yêu cầu 3)
+
+- Ưu tiên tái sử dụng Thủ tục 1 tại mục 2.3.a; chỉ chọn thủ tục/hàm khác đã có nếu khớp quy trình.
+- Xây dựng ô nhập tham số, nút thực thi và khu vực hiển thị kết quả trả về.
+- Kiểm thử tham số hợp lệ, tham số sai và trường hợp không có dữ liệu.
+- Ghi rõ tên đối tượng SQL, input, output và cách hiển thị; không thay xử lý tại Database bằng tính toán chỉ có ở Frontend.
+- Bàn giao source, API, ảnh thành công/lỗi, mô tả luồng FE–BE–Database.
+- **Deadline: 23:00 ngày 24/11/2026.**
+
+### Người 4 – Giao diện chung và báo cáo 3.2
+
+- Thiết kế trang chủ, menu điều hướng, kiểu bảng dữ liệu, biểu mẫu, nút và thông báo thống nhất.
+- Ghép ba màn hình thành **một ứng dụng**; phối hợp Người 1 kiểm tra đủ chức năng CRUD.
+- Vẽ Sequence Diagram hoặc Flowchart từng quy trình, thể hiện Frontend → Backend → SQL Server và Stored Procedure / Function / Trigger tương ứng.
+- Viết mục **3.2 Chi tiết hiện thực**: màn hình, chức năng, thao tác, sơ đồ, đối tượng SQL, hình chụp minh hoạ và diễn giải.
+- **Deadline: 23:00 ngày 25/11/2026.**
+
+### Người 5 – Backend chung, kiến trúc và demo
+
+- Thiết lập cấu hình kết nối SQL Server dùng chung; thống nhất routes / controllers / services, định dạng API response và xử lý lỗi.
+- Phối hợp tích hợp API thực thi Stored Procedure, Function và DML làm phát sinh Trigger; hỗ trợ, **không viết thay toàn bộ** phần của Người 1–3.
+- Viết mục **3.1 Mô tả công nghệ, cấu trúc source, kiến trúc**; README hướng dẫn cài đặt, cấu hình và chạy.
+- Không đưa tài khoản/mật khẩu SQL Server hoặc tệp `.env` chứa bí mật lên GitHub.
+- Kiểm thử toàn bộ luồng từ giao diện tới SQL Server; chuẩn bị dữ liệu demo và tình huống hỏi đáp.
+- **Deadline: 12:00 ngày 26/11/2026.**
+
+## 11. Các màn hình nghiệp vụ đề xuất
+
+| Màn hình | Chức năng minh hoạ | Điều kiện bắt buộc |
+| --- | --- | --- |
+| Quản lý thực đơn / bảng CRUD thực tế | Xem danh sách; form thêm/sửa; xác nhận xoá | Chỉ dùng quản lý thực đơn nếu cả ba thủ tục 2.1 thao tác trên đúng bảng đó; nếu không phải thay theo SQL thực tế |
+| Quản lý đơn hàng / chi tiết đơn | Thêm món, sửa số lượng, xoá dòng món, quan sát dữ liệu thay đổi | Phải khớp Trigger mục 2.2 thực tế và không trùng màn hình Yêu cầu 1 |
+| Tra cứu / xử lý nghiệp vụ | Nhập tham số; gọi Stored Procedure hoặc Function; trình bày kết quả | Có thể tích hợp vào màn hình 1 hoặc 2 nếu đúng nghiệp vụ |
+| Trang chủ / điều hướng | Đi đến các chức năng, giới thiệu hệ thống | Chỉ là giao diện hỗ trợ, không thay thế minh chứng ba yêu cầu |
+
+## 12. Công nghệ, kiến trúc và cấu trúc source thống nhất
+
+**Kiến trúc đề xuất:** Frontend (React) gửi HTTP request tới Backend (Node.js + Express); Backend kết nối Microsoft SQL Server để thực thi Stored Procedure, Function hoặc thao tác DML kích hoạt Trigger. Frontend không kết nối trực tiếp SQL Server.
+
+```text
+Database_Overall/
+├── frontend/
+│   └── src/
+│       ├── pages/
+│       ├── components/
+│       └── services/
+├── backend/
+│   └── src/
+│       ├── routes/
+│       ├── controllers/
+│       ├── services/
+│       └── config/
+├── database/
+│   └── *.sql
+└── README.md
+```
+
+**Lưu ý:** Đây là cấu trúc dự kiến dành cho phần phát triển ứng dụng, không phải xác nhận repository hiện đã có đủ các thư mục trên. Sử dụng một repository và branch riêng cho từng người; thống nhất tên endpoint, đối tượng SQL, kiểu dữ liệu và định dạng trả về trước khi ghép.
+
+## 13. Tiến độ và quy định bàn giao
+
+| Mốc thời gian | Công việc bắt buộc | Người phụ trách |
+| --- | --- | --- |
+| **22/11/2026 – 23:00** | Chốt bảng CRUD, ba thủ tục 2.1, Trigger 2.2 được chọn, thủ tục/hàm cho Yêu cầu 3; thống nhất API và giao diện | Cả nhóm; Người 5 tổng hợp |
+| **24/11/2026 – 23:00** | Hoàn thiện ba màn hình nghiệp vụ, các API tương ứng, kiểm thử đúng/sai và bàn giao | Người 1, 2, 3 |
+| **25/11/2026 – 23:00** | Hoàn thành giao diện chung, tích hợp Frontend, sơ đồ tương tác và báo cáo mục 3.2 | Người 4; cả nhóm phối hợp |
+| **26/11/2026 – 12:00** | Hoàn thiện Backend dùng chung, kết nối SQL Server, báo cáo 3.1, kiểm thử tích hợp và hướng dẫn chạy | Người 5 |
+| **26/11/2026 – 23:00** | Kiểm thử đầu-cuối, chụp minh chứng, hoàn thiện báo cáo, README và luyện demo/hỏi đáp | Cả 5 người |
+
+**Mỗi thành viên bàn giao:** mã nguồn, hướng dẫn chạy, tên bảng/thủ tục/hàm/trigger đã dùng, dữ liệu mẫu, kiểm thử đúng/sai, ảnh chụp trước/sau và phần mô tả liên quan. Ảnh minh hoạ phải có chú thích; sơ đồ phải thể hiện đúng luồng FE–BE–Database.
+
+## 14. Checklist kiểm tra trước khi nộp Phần 3
+
+- [ ] Có ít nhất hai màn hình **khác nhau** tương ứng Yêu cầu 1 và Yêu cầu 2.
+- [ ] Yêu cầu 1 hiển thị dữ liệu và thực hiện INSERT / UPDATE / DELETE thông qua **ba Stored Procedure mục 2.1**.
+- [ ] Yêu cầu 2 phát sinh thao tác DML thực tế từ ứng dụng để kích hoạt **một Trigger mục 2.2**, có dữ liệu chứng minh trước/sau.
+- [ ] Yêu cầu 3 gọi đúng Stored Procedure / Function đã làm trong Phần 2, có tham số và kết quả minh hoạ.
+- [ ] Mục 3.1 trình bày công nghệ, kiến trúc FE–BE–Database và cấu trúc source.
+- [ ] Mục 3.2 mô tả màn hình, chức năng, Sequence Diagram / Flowchart và đối tượng SQL liên quan.
+- [ ] Ứng dụng chạy được với cùng SQL Server, có dữ liệu mẫu và README hướng dẫn.
+- [ ] Tất cả thành viên chuẩn bị hỏi đáp về Stored Procedure, Function, Trigger và xử lý lỗi.
+- [ ] Hoàn thành và kiểm tra chung **trước 23:00 ngày 26/11/2026**.
+
+## 15. Lưu ý đối chiếu điểm Phần 3
+
+Trong phần mô tả yêu cầu: Yêu cầu 1 = **2,5đ**, Yêu cầu 2 = **2,5đ**, Yêu cầu 3 = **2,0đ**, hỏi đáp – demo = **2,0đ**. Bảng kê cuối mẫu báo cáo trình bày trọng số khác; bảng phân công trên mô tả **đầu việc** chứ không tự quy đổi thành 2,0 điểm/người. Khi điền bảng kê chính thức, nhóm đối chiếu cách tính điểm với giảng viên và tuân thủ nguyên tắc mỗi hàng do một thành viên đảm nhận.
+
+---
+
+**Phân công BTL2 Hệ cơ sở dữ liệu – Phần 3 | Hoàn thành trước 27/11/2026.**
