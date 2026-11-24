@@ -1,5 +1,7 @@
 # PHÂN CÔNG NHIỆM VỤ BÀI TẬP LỚN SỐ 2
 
+[Phần 3 của Người 1 – Danh mục món](nguoi1/phan3/README.md)
+
 MÔN HỆ CƠ SỞ DỮ LIỆU  |  PHẦN 1 VÀ PHẦN 2
 
 Nhóm: ..........................................    Chủ đề: ............................................................
