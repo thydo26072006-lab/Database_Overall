@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Quản lý gọi món | Bản demo</title>
+<style>
+  :root { font-family: system-ui, sans-serif; color: #17352c; background: #edf4ef; }
+  body { display: grid; min-height: 100vh; place-items: center; margin: 0; padding: 1.25rem; box-sizing: border-box; }
+  main { width: min(100%, 37rem); padding: clamp(1.5rem, 6vw, 3rem); box-sizing: border-box; background: #fff; border: 1px solid #cfddd4; border-radius: 1.25rem; box-shadow: 0 .6rem 2.4rem #17352c12; }
+  h1 { font-size: clamp(2rem, 6vw, 3rem); letter-spacing: -.04em; line-height: 1.08; margin: 0; }
+  p { line-height: 1.55; margin: .9rem 0; }
+  #status { color: #405b50; }
+  a { display: inline-block; background: #205641; color: white; text-decoration: none; font-weight: 650; padding: .8rem 1.15rem; border-radius: .55rem; }
+  a:hover { background: #164433; }
+  a:focus-visible { outline: 3px solid #234e3e; outline-offset: 4px; }
+  [hidden] { display: none; }
+</style>
+<script src="demo.js" defer></script>
+</head>
+<body>
+<main>
+  <h1>Quản lý gọi món</h1>
+  <p>Ứng dụng demo quản lý danh mục, món và size, và tổng hợp phân công theo ca.</p>
+  <p id="status" role="status">Đang lấy đường dẫn demo…</p>
+  <a id="open-app" hidden>Mở ứng dụng</a>
+  <noscript><p>Bật JavaScript để xem đường dẫn demo.</p></noscript>
+</main>
+</body>
+</html>
