@@ -9,7 +9,6 @@ import { loadEnv } from '../src/config/load-env.js';
 import { createQuery, getPool } from '../src/config/sql-server.js';
 
 const host = '127.0.0.1';
-const demoDatabase = 'BTL2_P3_DEMO';
 const categoryPath = '/api/danh-muc-mon';
 const itemPath = '/api/trigger-mon/mon';
 const reportPath = '/api/bao-cao/phan-cong-theo-ca';
@@ -228,7 +227,7 @@ async function testReport(t, request) {
 test('Backend tích hợp 12 endpoint và health trên SQL Server', async t => {
   // Bộ kiểm thử ghi dữ liệu tạm và cần dữ liệu mẫu của đúng CSDL thử.
   const config = loadEnv();
-  assert.equal(config.db.name, demoDatabase, 'Đặt DB_NAME=BTL2_P3_DEMO để chạy npm test.');
+  assert.match(config.db.name, /^BTL2_P3_DEMO(?:_[A-Za-z0-9_]{1,40})?$/, 'Chọn CSDL mẫu BTL2_P3_DEMO để chạy npm test.');
   await checkPort(config.appPort);
 
   const origin = 'http://' + host + ':' + config.appPort;
@@ -243,7 +242,7 @@ test('Backend tích hợp 12 endpoint và health trên SQL Server', async t => {
   let canClean = false;
   try {
     await waitForBackend(origin, () => exited);
-    assert.deepEqual(await query('SELECT DB_NAME() AS db'), [{ db: demoDatabase }]);
+    assert.deepEqual(await query('SELECT DB_NAME() AS db'), [{ db: config.db.name }]);
     assert.deepEqual(await readFixtures(fixtures), emptyFixtures);
     canClean = true;
 

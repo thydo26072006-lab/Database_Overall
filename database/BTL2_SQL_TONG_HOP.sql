@@ -1,9 +1,9 @@
-﻿/* BTL2 — BẢN FIX ĐỦ NGƯỜI 1, 2, 3, 4, 5
+/* BTL2 — BẢN FIX ĐỦ NGƯỜI 1, 2, 3, 4, 5
 Chuẩn: EERD_UPDATE.xlsx / EERD_VE_LAI.drawio hiện tại, mapping 30 bảng.
 SQL Server 2022 (T-SQL). Đủ 5 truy vấn, 2 thủ tục nghiệp vụ, 2 hàm, trigger và demo CRUD.
 Mỗi phần bên dưới ghi người + task; file tự chứa, không dùng :r hoặc đường dẫn máy tác giả.
 Mặc định tạo CSDL mới BTL2_FIX_12345. Đổi đồng thời tên này nếu muốn một CSDL mới khác.
-Không xóa/ghi đè CSDL có sẵn. Chạy bằng sqlcmd -b -f 65001 hoặc runner 00_CHAY_KIEM_THU.ps1.
+Không xóa/ghi đè CSDL có sẵn. Chạy bằng sqlcmd -b -f 65001 hoặc Khoi_Tao_Du_Lieu_Demo.ps1.
 SSMS: Ctrl+M để thu Actual Execution Plan cho phần index; Messages chứa IO/TIME.
 Nếu guard gặp CSDL đã có, script dừng thực thi bằng NOEXEC; mở cửa sổ mới hoặc chạy
 SET NOEXEC OFF trong một lần thực thi riêng sau khi sửa tên CSDL.
@@ -34,7 +34,7 @@ GO
 
 /* ====================================================================
 PHẦN 01: NGƯỜI 1 — 1.1.a,b: 7 bảng nền, khóa và CHECK
-FILE NGUỒN TRONG THƯ MỤC FIX: nguoi1/01_Cau_truc.sql
+Nguồn đối chiếu trong nhánh thành viên: nguoi1/01_Cau_truc.sql
 ==================================================================== */
 
 /* NGƯỜI 1 | TASK 1.1.a,b: tạo bảng, PK/UNIQUE/FK/CHECK theo mapping 30 bảng. */
@@ -136,7 +136,7 @@ GO
 
 /* ====================================================================
 PHẦN 02: NGƯỜI 2 — 1.1.a,b: 23 bảng còn lại, khóa và CHECK
-FILE NGUỒN TRONG THƯ MỤC FIX: nguoi2/01_Cau_truc.sql
+Nguồn đối chiếu trong nhánh thành viên: nguoi2/01_Cau_truc.sql
 ==================================================================== */
 
 /* NGƯỜI 2 | TASK 1.1.a,b: tạo bảng, PK/UNIQUE/FK/CHECK theo mapping 30 bảng. */
@@ -537,7 +537,7 @@ GO
 
 /* ====================================================================
 PHẦN 03: NGƯỜI 1 — 2.2.a Trigger 1; 2.1.a INSERT
-FILE NGUỒN TRONG THƯ MỤC FIX: nguoi1/02_Trigger_INSERT.sql
+Nguồn đối chiếu trong nhánh thành viên: nguoi1/02_Trigger_INSERT.sql
 ==================================================================== */
 
 /* NGUOI 1 - MUC 2.2.a VA 2.1.a
@@ -653,7 +653,16 @@ BEGIN
            AND NOT EXISTS (SELECT 1 FROM dbo.DANH_MUC_MON WHERE MaDanhMuc = @MaCha)
             THROW 51008, N'Danh muc cha chua ton tai.', 1;
 
+        DECLARE @DanhMucVuaThem TABLE
+        (
+            MaDanhMuc VARCHAR(30),
+            TenDanhMuc NVARCHAR(200),
+            MaDanhMucCha VARCHAR(30)
+        );
+
         INSERT INTO dbo.DANH_MUC_MON (MaDanhMuc, TenDanhMuc, MaDanhMucCha)
+        OUTPUT inserted.MaDanhMuc, inserted.TenDanhMuc, inserted.MaDanhMucCha
+        INTO @DanhMucVuaThem (MaDanhMuc, TenDanhMuc, MaDanhMucCha)
         VALUES (@Ma, CONVERT(NVARCHAR(200), @TenDanhMuc), @MaCha);
 
         -- Chi COMMIT giao dich do chinh thu tuc mo.
@@ -661,8 +670,7 @@ BEGIN
             COMMIT TRANSACTION;
 
         SELECT MaDanhMuc, TenDanhMuc, MaDanhMucCha
-        FROM dbo.DANH_MUC_MON
-        WHERE MaDanhMuc = @Ma;
+        FROM @DanhMucVuaThem;
     END TRY
     BEGIN CATCH
         IF @SoGiaoDichBanDau = 0 AND XACT_STATE() <> 0
@@ -680,7 +688,7 @@ GO
 
 /* ====================================================================
 PHẦN 04: NGƯỜI 2 — 2.2.b nhóm Trigger 2, MON–SIZE_MON
-FILE NGUỒN TRONG THƯ MỤC FIX: nguoi2/02_Trigger_2.sql
+Nguồn đối chiếu trong nhánh thành viên: nguoi2/02_Trigger_2.sql
 ==================================================================== */
 
 /* NGƯỜI 2 | TASK 2.2.b: nhóm Trigger 2 — MON và SIZE_MON.
@@ -736,7 +744,7 @@ GO
 
 /* ====================================================================
 PHẦN 05: NGƯỜI 2 — 2.1.b UPDATE danh mục
-FILE NGUỒN TRONG THƯ MỤC FIX: nguoi2/03_Thu_tuc_UPDATE.sql
+Nguồn đối chiếu trong nhánh thành viên: nguoi2/03_Thu_tuc_UPDATE.sql
 ==================================================================== */
 
 /* NGƯỜI 2 | TASK 2.1.b UPDATE | CRUD chung dbo.DANH_MUC_MON.
@@ -792,7 +800,7 @@ GO
 
 /* ====================================================================
 PHẦN 06: NGƯỜI 1/2 — hỗ trợ 1.1.b: ràng buộc liên bảng và view dẫn xuất
-FILE NGUỒN TRONG THƯ MỤC FIX: chung/03_Bao_ve_nghiep_vu.sql
+Nguồn đối chiếu trong nhánh thành viên: chung/03_Bao_ve_nghiep_vu.sql
 ==================================================================== */
 
 /* NGƯỜI 1 + 2 | HỖ TRỢ TASK 1.1.b: ràng buộc liên bảng ngoài CHECK.
@@ -936,7 +944,7 @@ GO
 
 /* ====================================================================
 PHẦN 07: NGƯỜI 2 — hỗ trợ 1.1.b: kho và cấu hình khuyến mãi
-FILE NGUỒN TRONG THƯ MỤC FIX: chung/04_Kho_va_khuyen_mai.sql
+Nguồn đối chiếu trong nhánh thành viên: chung/04_Kho_va_khuyen_mai.sql
 ==================================================================== */
 
 /* NGƯỜI 2 | Hỗ trợ ràng buộc 1.1.b — BR30/32/49–52/73–78. */
@@ -1111,7 +1119,7 @@ GO
 
 /* ====================================================================
 PHẦN 08: NGƯỜI 2 — hỗ trợ 1.1.b: dòng đơn, topping, tiêu hao
-FILE NGUỒN TRONG THƯ MỤC FIX: chung/05a_Dong_mon_va_topping.sql
+Nguồn đối chiếu trong nhánh thành viên: chung/05a_Dong_mon_va_topping.sql
 ==================================================================== */
 
 /* NGƯỜI 2 | Hỗ trợ TASK 1.1.b: bảo vệ dòng đơn, topping và tiêu hao.
@@ -1191,7 +1199,7 @@ GO
 
 /* ====================================================================
 PHẦN 09: NGƯỜI 1/2 — 1.1: dữ liệu mẫu chung, nhập mở sổ
-FILE NGUỒN TRONG THƯ MỤC FIX: chung/05_Du_lieu_mau.sql
+Nguồn đối chiếu trong nhánh thành viên: chung/05_Du_lieu_mau.sql
 ==================================================================== */
 
 /* NGƯỜI 1 + 2 | TASK 1.1: dữ liệu mẫu chung, khớp 30 bảng.
@@ -1214,7 +1222,7 @@ INSERT dbo.MON(MaMon,TenMon,TrangThaiKinhDoanh,LoaiMon,MaDanhMuc) VALUES
 ('BANH_QUY',N'Bánh quy','NgungBan','DoAn','DM_DOAN'),
 ('TP_TRANCHAU',N'Trân châu','NgungBan','Topping','DM_TOPPING'),
 ('TP_THACH',N'Thạch','NgungBan','Topping','DM_TOPPING'),
-('MON_NGUNG',N'Món ngừng bán','NgungBan','DoUong','DM_TRA');
+('TRA_CHANH',N'Trà chanh','NgungBan','DoUong','DM_TRA');
 -- Trigger 2 đã tạo S hoặc TC; cập nhật dòng đó và bổ sung các size còn lại.
 DECLARE @Gia TABLE(MaMon VARCHAR(30),MaSize VARCHAR(2),GiaBan DECIMAL(18,2),TrangThaiSize VARCHAR(30));
 INSERT @Gia VALUES
@@ -1251,7 +1259,7 @@ INSERT dbo.CHI_TIET_CONG_THUC(MaCongThuc,MaHangHoa,DinhLuongCoSo,LoaiDinhLuong) 
 ('CT_TRA_DAO_L','HH_TRA',13,'CoDinh'),('CT_TRA_DAO_L','HH_DUONG',25,'CoTheThayDoi'),
 ('CT_BANH_QUY_S','HH_BANH',1,'CoDinh'),('CT_TP_TRANCHAU_TC','HH_TRANCHAU',30,'CoDinh'),('CT_TP_THACH_TC','HH_THACH',25,'CoDinh');
 UPDATE dbo.CONG_THUC SET TrangThai='KichHoat';
-UPDATE dbo.MON SET TrangThaiKinhDoanh='DangBan' WHERE MaMon<>'MON_NGUNG';
+UPDATE dbo.MON SET TrangThaiKinhDoanh='DangBan' WHERE MaMon<>'TRA_CHANH';
 INSERT dbo.NHAN_VIEN(MaNV,HoTen,TrangThaiLamViec,NgayVaoLam,DuocLapPhieuKho,SoGioLam,LuongCoSo,HeSoLuong) VALUES
 ('NV01',N'Phục vụ mẫu','DangLam','20260101',0,80,25000,1.20),
 ('NV02',N'Thu ngân mẫu','DangLam','20260101',0,80,30000,1.00),
@@ -1305,7 +1313,7 @@ GO
 
 /* ====================================================================
 PHẦN 10: NGƯỜI 3 — 1.2: tạo 5 chỉ mục I1–I5
-FILE NGUỒN TRONG THƯ MỤC FIX: nguoi3/01_Chi_muc.sql
+Nguồn đối chiếu trong nhánh thành viên: nguoi3/01_Chi_muc.sql
 ==================================================================== */
 
 /* NGƯỜI 3 | TASK 1.2: 5 nhu cầu chỉ mục; I3 sửa theo BR02, không còn khu vực. */
@@ -1326,7 +1334,7 @@ GO
 
 /* ====================================================================
 PHẦN 11: NGƯỜI 3 — 2.1.c DELETE danh mục
-FILE NGUỒN TRONG THƯ MỤC FIX: nguoi3/03_Thu_tuc_DELETE.sql
+Nguồn đối chiếu trong nhánh thành viên: nguoi3/03_Thu_tuc_DELETE.sql
 ==================================================================== */
 
 /* NGƯỜI 3 | File 03_Thu_tuc_DELETE.sql | Bản sửa theo EERD_UPDATE.xlsx. */
@@ -1386,7 +1394,7 @@ GO
 
 /* ====================================================================
 PHẦN 12: NGƯỜI 3 — 2.3.a thủ tục tổng hợp phân công có IF/WHILE
-FILE NGUỒN TRONG THƯ MỤC FIX: nguoi3/04_Thu_tuc_1.sql
+Nguồn đối chiếu trong nhánh thành viên: nguoi3/04_Thu_tuc_1.sql
 ==================================================================== */
 
 /* NGƯỜI 3 | File 04_Thu_tuc_1.sql | Bản sửa theo EERD_UPDATE.xlsx. */
@@ -1456,7 +1464,7 @@ GO
 
 /* ====================================================================
 PHẦN 13: NGƯỜI 4 — 2.3.b thủ tục tổng hợp thực thu có IF/WHILE
-FILE NGUỒN TRONG THƯ MỤC FIX: nguoi4/03_Thu_tuc_2.sql
+Nguồn đối chiếu trong nhánh thành viên: nguoi4/03_Thu_tuc_2.sql
 ==================================================================== */
 
 /* Người 4 — Thủ tục 2, mục 2.3.b (1,25 điểm gồm demo).
@@ -1534,7 +1542,7 @@ GO
 
 /* ====================================================================
 PHẦN 14: NGƯỜI 4 — dữ liệu phụ trợ demo đầy đủ liên kết, không tính thành thủ tục 2
-FILE NGUỒN TRONG THƯ MỤC FIX: nguoi4/08_Du_lieu_demo_bao_cao.sql
+Nguồn đối chiếu trong nhánh thành viên: nguoi4/08_Du_lieu_demo_bao_cao.sql
 ==================================================================== */
 
 /* NGƯỜI 4 | DỮ LIỆU PHỤ TRỢ DEMO, không tính như Thủ tục 2.
@@ -1620,7 +1628,7 @@ GO
 
 /* ====================================================================
 PHẦN 15: NGƯỜI 5 — 2.4.a Hàm 1 đếm cấu hình theo cây danh mục
-FILE NGUỒN TRONG THƯ MỤC FIX: nguoi5/03_Ham_1.sql
+Nguồn đối chiếu trong nhánh thành viên: nguoi5/03_Ham_1.sql
 ==================================================================== */
 
 /* NGƯỜI 5 | File 03_Ham_1.sql | Bản sửa theo EERD_UPDATE.xlsx. */
@@ -1693,7 +1701,7 @@ GO
 
 /* ====================================================================
 PHẦN 16: NGƯỜI 5 — 2.4.b Hàm 2 tồn kho tới thời điểm
-FILE NGUỒN TRONG THƯ MỤC FIX: nguoi5/04_Ham_2.sql
+Nguồn đối chiếu trong nhánh thành viên: nguoi5/04_Ham_2.sql
 ==================================================================== */
 
 /* NGƯỜI 5 | File 04_Ham_2.sql | Bản sửa theo EERD_UPDATE.xlsx. */
@@ -1748,7 +1756,7 @@ GO
 
 /* ====================================================================
 PHẦN 17: HỖ TRỢ CHUNG — test độc lập, hoàn tác và đối chiếu mã lỗi
-FILE NGUỒN TRONG THƯ MỤC FIX: chung/06_Cong_cu_demo.sql
+Nguồn đối chiếu trong nhánh thành viên: chung/06_Cong_cu_demo.sql
 ==================================================================== */
 
 /* HỖ TRỢ KIỂM THỬ: không phải bảng nghiệp vụ hoặc nhiệm vụ tính điểm riêng.
@@ -1781,7 +1789,7 @@ GO
 
 /* ====================================================================
 PHẦN 18: NGƯỜI 1 — demo bảng/CHECK/Trigger 1/INSERT
-FILE NGUỒN TRONG THƯ MỤC FIX: nguoi1/03_Demo.sql
+Nguồn đối chiếu trong nhánh thành viên: nguoi1/03_Demo.sql
 ==================================================================== */
 
 /* NGƯỜI 1 | TASK 1.1 demo bảng/CHECK; TASK 2.2.a demo Trigger 1; 2.1.a INSERT.
@@ -1822,7 +1830,7 @@ GO
 
 /* ====================================================================
 PHẦN 19: NGƯỜI 2 — demo Trigger 2/UPDATE và nghiệp vụ đã sửa
-FILE NGUỒN TRONG THƯ MỤC FIX: nguoi2/04_Demo.sql
+Nguồn đối chiếu trong nhánh thành viên: nguoi2/04_Demo.sql
 ==================================================================== */
 
 /* NGƯỜI 2 | TASK 2.2.b demo Trigger 2; 2.1.b UPDATE; bổ sung CHECK/BR. */
@@ -1887,7 +1895,7 @@ GO
 
 /* ====================================================================
 PHẦN 20: NGƯỜI 3 — truy vấn 1, SELECT/FROM/WHERE/ORDER BY
-FILE NGUỒN TRONG THƯ MỤC FIX: nguoi3/02_Truy_van_1.sql
+Nguồn đối chiếu trong nhánh thành viên: nguoi3/02_Truy_van_1.sql
 ==================================================================== */
 
 /* NGƯỜI 3 | File 02_Truy_van_1.sql | Bản sửa theo EERD_UPDATE.xlsx. */
@@ -1915,7 +1923,7 @@ GO
 
 /* ====================================================================
 PHẦN 21: NGƯỜI 3 — kiểm thử DELETE để bàn giao CRUD
-FILE NGUỒN TRONG THƯ MỤC FIX: nguoi3/05_Demo_Thu_tuc_DELETE.sql
+Nguồn đối chiếu trong nhánh thành viên: nguoi3/05_Demo_Thu_tuc_DELETE.sql
 ==================================================================== */
 
 /* NGƯỜI 3 | TASK 2.1.c: kiểm tra DELETE trước bàn giao demo CRUD cho Người 4. */
@@ -1933,7 +1941,7 @@ GO
 
 /* ====================================================================
 PHẦN 22: NGƯỜI 3 — demo thủ tục 1, đúng/sai
-FILE NGUỒN TRONG THƯ MỤC FIX: nguoi3/06_Demo_Thu_tuc_1.sql
+Nguồn đối chiếu trong nhánh thành viên: nguoi3/06_Demo_Thu_tuc_1.sql
 ==================================================================== */
 
 /* NGƯỜI 3 | TASK 2.3.a: thủ tục có IF/WHILE, dữ liệu và kết quả. */
@@ -1956,7 +1964,7 @@ GO
 
 /* ====================================================================
 PHẦN 23: NGƯỜI 3 — 2.4.a demo Hàm 1 nhận từ Người 5
-FILE NGUỒN TRONG THƯ MỤC FIX: nguoi3/07_Demo_Ham_1.sql
+Nguồn đối chiếu trong nhánh thành viên: nguoi3/07_Demo_Ham_1.sql
 ==================================================================== */
 
 /* NGƯỜI 3 | TASK 2.4.a DEMO HÀM 1, nhận mã hàm từ Người 5.
@@ -1979,7 +1987,7 @@ GO
 
 /* ====================================================================
 PHẦN 24: NGƯỜI 4 — truy vấn 2, chi tiết thanh toán theo khoảng ngày
-FILE NGUỒN TRONG THƯ MỤC FIX: nguoi4/01_Truy_van_2.sql
+Nguồn đối chiếu trong nhánh thành viên: nguoi4/01_Truy_van_2.sql
 ==================================================================== */
 
 /* Người 4 — Truy vấn 2, hàng 1.2.b (1,0 điểm).
@@ -2012,7 +2020,7 @@ GO
 
 /* ====================================================================
 PHẦN 25: NGƯỜI 4 — truy vấn 3, tổng hợp biến động kho, GROUP BY và SUM
-FILE NGUỒN TRONG THƯ MỤC FIX: nguoi4/02_Truy_van_3.sql
+Nguồn đối chiếu trong nhánh thành viên: nguoi4/02_Truy_van_3.sql
 ==================================================================== */
 
 /* NGƯỜI 4 | TASK 1.3 / hàng 1.2.c: Truy vấn 3 có GROUP BY và tổng hợp.
@@ -2050,7 +2058,7 @@ GO
 
 /* ====================================================================
 PHẦN 26: NGƯỜI 4 — 2.3.b demo thủ tục 2, nguồn thật 30 bảng, hoàn tác dữ liệu mẫu
-FILE NGUỒN TRONG THƯ MỤC FIX: nguoi4/04_Demo_Thu_tuc_2.sql
+Nguồn đối chiếu trong nhánh thành viên: nguoi4/04_Demo_Thu_tuc_2.sql
 ==================================================================== */
 
 /* NGƯỜI 4 | TASK 2.3.b demo thủ tục 2 và dữ liệu cho truy vấn 2–3.
@@ -2122,7 +2130,7 @@ GO
 
 /* ====================================================================
 PHẦN 27: NGƯỜI 4 — kiểm thử lỗi và biên DATE của thủ tục 2
-FILE NGUỒN TRONG THƯ MỤC FIX: nguoi4/07_Kiem_thu_bien_Thu_tuc_2.sql
+Nguồn đối chiếu trong nhánh thành viên: nguoi4/07_Kiem_thu_bien_Thu_tuc_2.sql
 ==================================================================== */
 
 /* NGƯỜI 4 | TASK 2.3.b: báo lỗi, khoảng rỗng, ngày biên, không sửa dữ liệu. */
@@ -2152,7 +2160,7 @@ GO
 
 /* ====================================================================
 PHẦN 28: NGƯỜI 4 — 2.1 demo INSERT/UPDATE/DELETE nhận từ Người 1/2/3
-FILE NGUỒN TRONG THƯ MỤC FIX: nguoi4/05_Demo_CRUD.sql
+Nguồn đối chiếu trong nhánh thành viên: nguoi4/05_Demo_CRUD.sql
 ==================================================================== */
 
 /* NGƯỜI 4 | TASK 2.1 DEMO CRUD nhận đúng mã Người 1/2/3.
@@ -2192,7 +2200,7 @@ GO
 
 /* ====================================================================
 PHẦN 29: NGƯỜI 4 — 2.4.b demo Hàm 2 nhận từ Người 5
-FILE NGUỒN TRONG THƯ MỤC FIX: nguoi4/06_Demo_Ham_2.sql
+Nguồn đối chiếu trong nhánh thành viên: nguoi4/06_Demo_Ham_2.sql
 ==================================================================== */
 
 /* NGƯỜI 4 | TASK 2.4.b: DEMO HÀM 2 nhận từ Người 5.
@@ -2219,7 +2227,7 @@ GO
 
 /* ====================================================================
 PHẦN 30: NGƯỜI 5 — truy vấn 4, GROUP BY và hàm tổng hợp
-FILE NGUỒN TRONG THƯ MỤC FIX: nguoi5/01_Truy_van_4.sql
+Nguồn đối chiếu trong nhánh thành viên: nguoi5/01_Truy_van_4.sql
 ==================================================================== */
 
 /* NGƯỜI 5 | File 01_Truy_van_4.sql | Bản sửa theo EERD_UPDATE.xlsx. */
@@ -2251,7 +2259,7 @@ GO
 
 /* ====================================================================
 PHẦN 31: NGƯỜI 5 — truy vấn 5, hai tầng truy vấn con và AVG
-FILE NGUỒN TRONG THƯ MỤC FIX: nguoi5/02_Truy_van_5.sql
+Nguồn đối chiếu trong nhánh thành viên: nguoi5/02_Truy_van_5.sql
 ==================================================================== */
 
 /* NGƯỜI 5 | File 02_Truy_van_5.sql | Bản sửa theo EERD_UPDATE.xlsx. */
@@ -2293,7 +2301,7 @@ GO
 
 /* ====================================================================
 PHẦN 32: NGƯỜI 5 — tự kiểm lại bộ test bàn giao; quyền tác giả hàm thuộc Người 5, điểm demo thuộc Người 4
-FILE NGUỒN TRONG THƯ MỤC FIX: nguoi5/05_Demo_Ham_2_ban_giao.sql
+Nguồn đối chiếu trong nhánh thành viên: nguoi5/05_Demo_Ham_2_ban_giao.sql
 ==================================================================== */
 
 /* NGƯỜI 5 | Bộ test bàn giao Hàm 2; phần demo được giao Người 4 khi tích hợp.
@@ -2319,7 +2327,7 @@ GO
 
 /* ====================================================================
 PHẦN 33: NGƯỜI 2 — demo trước/sau cùng bộ 5 index của Người 3
-FILE NGUỒN TRONG THƯ MỤC FIX: nguoi2/05_Demo_chi_muc.sql
+Nguồn đối chiếu trong nhánh thành viên: nguoi2/05_Demo_chi_muc.sql
 ==================================================================== */
 
 /* NGƯỜI 2 | TASK 1.2 DEMO chỉ mục; mã CREATE INDEX do NGƯỜI 3 phụ trách.
@@ -2383,7 +2391,7 @@ GO
 
 /* ====================================================================
 PHẦN 34: NGƯỜI 1/2/3/4/5 — kiểm tra cấu trúc và dữ liệu sau tất cả demo
-FILE NGUỒN TRONG THƯ MỤC FIX: chung/07_Kiem_tra_cuoi.sql
+Nguồn đối chiếu trong nhánh thành viên: chung/07_Kiem_tra_cuoi.sql
 ==================================================================== */
 
 /* NGƯỜI 1/2/3/4/5 | Đối chiếu sau cài đặt; các demo đã ROLLBACK. */

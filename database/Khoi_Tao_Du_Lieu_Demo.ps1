@@ -15,9 +15,8 @@ $sqlArgs = @('-S', $Instance, '-E', '-b', '-f', '65001')
 if ($TrustServerCertificate) { $sqlArgs += '-C' }
 
 $aggregate = Join-Path $PSScriptRoot 'BTL2_SQL_TONG_HOP.sql'
-$supplement = Join-Path $PSScriptRoot '02_Trigger_INSERT.sql'
 $metadata = Join-Path $PSScriptRoot '03_Kiem_tra_doi_tuong_Phan2.sql'
-foreach ($file in $aggregate, $supplement, $metadata) {
+foreach ($file in $aggregate, $metadata) {
     if (!(Test-Path -LiteralPath $file -PathType Leaf)) {
         throw "Missing SQL file: $file"
     }
@@ -35,11 +34,8 @@ try {
 
     & $sqlcmd @sqlArgs -d master -i $tempFile
     if ($LASTEXITCODE -ne 0) {
-        throw 'Aggregate SQL failed. The supplement and checks were skipped.'
+        throw 'Aggregate SQL failed. Object verification was skipped.'
     }
-
-    & $sqlcmd @sqlArgs -d $DatabaseName -i $supplement
-    if ($LASTEXITCODE -ne 0) { throw 'The N1 SQL supplement failed.' }
 
     & $sqlcmd @sqlArgs -d $DatabaseName -i $metadata
     if ($LASTEXITCODE -ne 0) { throw 'SQL object verification failed.' }
