@@ -230,6 +230,91 @@ Database_Overall/
 
 Trong phần mô tả yêu cầu: Yêu cầu 1 = **2,5đ**, Yêu cầu 2 = **2,5đ**, Yêu cầu 3 = **2,0đ**, hỏi đáp – demo = **2,0đ**. Bảng kê cuối mẫu báo cáo trình bày trọng số khác; bảng phân công trên mô tả **đầu việc** chứ không tự quy đổi thành 2,0 điểm/người. Khi điền bảng kê chính thức, nhóm đối chiếu cách tính điểm với giảng viên và tuân thủ nguyên tắc mỗi hàng do một thành viên đảm nhận.
 
+## 16. Cấu trúc tổng hợp 5 thành viên và hướng dẫn chạy ứng dụng Phần 3
+
+### Cấu trúc thư mục tổng hợp trên `main`
+
+| Thành viên / Thành phần | Phần 1 & 2 | Phần 3 / Ứng dụng | Ghi chú |
+| --- | --- | --- | --- |
+| **Tài liệu chung** | `BTL2_SQL_TONG_HOP.sql`, `EERD_UPDATE.xlsx`, `EERD_VE_LAI.drawio`, `README.md` | `frontend/`, `backend/`, `database/` | Ứng dụng tích hợp đầy đủ 3 yêu cầu Phần 3 |
+| **Người 1** | `nguoi1/` (`01_Cau_truc.sql`, `02_Trigger_INSERT.sql`, `03_Demo.sql`, `BAO_CAO.md`, `Bao_cao_Nguoi1_FIX.docx`, `hinh/`) | `nguoi1/phan3/` + màn hình & API CRUD `DANH_MUC_MON` đã tích hợp vào `frontend/` & `backend/` | Nhận xét chéo: `NHAN_XET_NGUOI4.md` |
+| **Người 2** | `nguoi2/` | `nguoi2_phan3/` + màn hình & API Trigger `MON`/`SIZE_MON` đã tích hợp vào `frontend/` & `backend/` | Nhận xét chéo: `NHAN_XET_KIEM_TRA_NGUOI5.md` |
+| **Người 3** | `Nguoi3_BTL261/` | `BTL3_Nguoi3/` + màn hình & API `sp_BaoCaoPhanCongTheoCa` đã tích hợp vào `frontend/` & `backend/` | Nhận xét chéo: `NHAN_XET_NGUOI_1.md` |
+| **Người 4** | `nguoi4/` | `frontend/` (giao diện hợp nhất 4 màn hình), `nguoi4_phan3/` (báo cáo mục 3.2, sơ đồ Draw.io/PNG, ảnh minh chứng) | Nhận xét chéo: `NHAN_XET_NGUOI2.md` |
+| **Người 5** | `nguoi5/` | `backend/` (Express API hợp nhất + kiểm thử tích hợp), `database/` (script nạp & kiểm tra CSDL), `nguoi5_phan3/` (báo cáo mục 3.1, bản ghép thử, kịch bản demo) | Bàn giao & kiểm thử tích hợp |
+
+### Chuẩn bị môi trường chạy ứng dụng Phần 3
+
+- Node.js từ `22.12.0` và `npm` trong `PATH` (kiểm tra bằng `node --version` và `npm --version`).
+- Microsoft SQL Server 2022 trở lên. Khi nạp dữ liệu bằng PowerShell cần `sqlcmd` và tài khoản Windows có quyền tạo CSDL (hoặc dùng SSMS).
+- Nếu backend dùng Windows Auth (`DB_AUTH=windows`), cài **ODBC Driver 18 for SQL Server** (`npm ci` cài gói `msnodesqlv8` cho chế độ này).
+
+### Nạp CSDL thử (`BTL2_P3_DEMO`)
+
+Nạp `database/BTL2_SQL_TONG_HOP.sql` trước, rồi nạp `database/02_Trigger_INSERT.sql` vào CSDL `BTL2_P3_DEMO`. Xem chi tiết lệnh `sqlcmd`, SSMS và bước dựng lại dữ liệu sạch trong [hướng dẫn nạp CSDL](database/README.md). Dữ liệu mẫu gồm 6 danh mục, 7 món, 13 size và 2 ca làm việc ngày 13/11/2026.
+
+### Cài và chạy backend (`./backend`)
+
+```powershell
+Set-Location './backend'
+npm ci
+if (!(Test-Path -LiteralPath .env)) {
+    Copy-Item -LiteralPath .env.example -Destination .env
+}
+```
+
+Với Windows Auth trên máy cục bộ, cấu hình `backend/.env` (thay `DB_INSTANCE` theo instance SQL Server của máy):
+
+```dotenv
+APP_PORT=3001
+DB_NAME=BTL2_P3_DEMO
+DB_AUTH=windows
+DB_INSTANCE=localhost\SQLEXPRESS
+DB_ENCRYPT=true
+DB_TRUST_SERVER_CERTIFICATE=true
+CORS_ORIGIN=http://127.0.0.1:5173,http://localhost:5173
+```
+
+Nếu dùng SQL Auth qua TCP, đặt `DB_AUTH=sql` và điền `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD` theo [tệp mẫu backend](backend/.env.example). Không commit tệp `.env` chứa thông tin đăng nhập lên GitHub.
+
+Khởi chạy backend bằng `npm start` và kiểm tra sức khỏe kết nối:
+
+```powershell
+Invoke-RestMethod 'http://127.0.0.1:3001/api/health' | ConvertTo-Json -Compress
+```
+
+Kết quả hợp lệ khi SQL Server sẵn sàng: `{"data":{"status":"ok","database":"connected"}}`.
+
+### Cài và chạy frontend (`./frontend`)
+
+```powershell
+Set-Location './frontend'
+npm ci
+if (!(Test-Path -LiteralPath .env.local)) {
+    Copy-Item -LiteralPath .env.example -Destination .env.local
+}
+```
+
+Trong `frontend/.env.local`, cấu hình proxy tới backend chung (bỏ hoặc chú thích `VITE_N1_API_TARGET`, `VITE_N2_API_TARGET`, `VITE_N3_API_TARGET` để cả ba nhóm API đi qua một cổng):
+
+```dotenv
+VITE_API_BASE_URL=
+VITE_API_PROXY_TARGET=http://127.0.0.1:3001
+```
+
+Chạy `npm run dev` và mở địa chỉ Vite hiển thị (mặc định `http://127.0.0.1:5173`). Để chạy bản build sản xuất, chạy `npm run build` rồi `npm run preview`. Xem thêm [tài liệu bàn giao backend chung](nguoi5_phan3/BAN_GIAO_BACKEND_CHUNG.md).
+
+### Chạy kiểm thử tích hợp
+
+Dùng `DB_NAME=BTL2_P3_DEMO` với dữ liệu mẫu, dừng backend đang chạy trên `APP_PORT`, sau đó chạy:
+
+```powershell
+Set-Location './backend'
+npm test
+```
+
+Bộ kiểm thử tự khởi động backend, kiểm tra 12 endpoint nghiệp vụ và `/api/health`, tự dọn dữ liệu thử rồi đóng kết nối SQL (kỳ vọng 7 phép kiểm tra đạt, `fail 0`).
+
 ---
 
 **Phân công BTL2 Hệ cơ sở dữ liệu – Phần 3 | Hoàn thành trước 27/11/2026.**
