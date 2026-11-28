@@ -202,7 +202,11 @@ export default function TriggerMonPage() {
                       <th scope="row">{item.maMon}</th>
                       <td>{item.tenMon}<small>{item.tenDanhMuc}</small></td>
                       <td>{types[item.loaiMon]}</td>
-                      <td><StatusBadge active={item.trangThaiKinhDoanh === 'DangBan'}>{statuses[item.trangThaiKinhDoanh]}</StatusBadge></td>
+                      <td>
+                        <StatusBadge active={item.trangThaiKinhDoanh === 'DangBan'} inactiveWarning>
+                          {statuses[item.trangThaiKinhDoanh]}
+                        </StatusBadge>
+                      </td>
                       <td>
                         <button type="button" disabled={busy} aria-pressed={item.maMon === selectedCode} aria-label={`Xem size món ${item.maMon}`} onClick={() => selectItem(item.maMon)}>
                           Xem size
@@ -237,7 +241,11 @@ export default function TriggerMonPage() {
                         <tr key={size.maSize}>
                           <th scope="row">{size.maSize}</th>
                           <td>{priceInDong.format(size.giaBan)}</td>
-                          <td><StatusBadge active={size.trangThaiSize === 'DangBan'}>{statuses[size.trangThaiSize]}</StatusBadge></td>
+                          <td>
+                            <StatusBadge active={size.trangThaiSize === 'DangBan'} inactiveWarning>
+                              {statuses[size.trangThaiSize]}
+                            </StatusBadge>
+                          </td>
                           <td className="trigger-mon-actions">
                             <button type="button" aria-label={`Sửa size ${size.maSize}`} disabled={locked} onClick={() => {
                               clearInvalidSizeFeedback();
