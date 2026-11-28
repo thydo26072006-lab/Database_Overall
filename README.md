@@ -92,3 +92,91 @@ Nhóm phải hiểu cả nội dung không được phân công vì giảng viê
 ---
 
 Phân công BTL2 Hệ cơ sở dữ liệu – SQL Server | Hoàn thành trước 17/11/2026
+
+## 8. Cài đặt và chạy ứng dụng Phần 3
+
+### Chuẩn bị môi trường
+
+- Node.js từ `22.12.0` và npm trong `PATH`. Kiểm tra bằng `node --version` và `npm --version`.
+- SQL Server 2022 trở lên. Khi nạp dữ liệu bằng PowerShell, cần `sqlcmd` và tài khoản Windows có quyền tạo CSDL. Có thể dùng SSMS để nạp và kiểm tra dữ liệu.
+- Nếu backend dùng Windows Auth, cài ODBC Driver 18 for SQL Server. `npm ci` cài gói `msnodesqlv8` dùng cho chế độ này.
+
+| Phần | Thư mục trong workspace hiện tại |
+| --- | --- |
+| Frontend Người 4 | `D:\Database_Overall\frontend` |
+| Backend Người 5 | `D:\Database_Overall\nguoi5_branch\backend` |
+| Script tạo và kiểm tra CSDL | `D:\Database_Overall\nguoi5_branch\database` |
+
+Backend và các script CSDL nằm trong bản checkout `nguoi5`. Dùng frontend tích hợp của bản checkout `nguoi4`. Nếu hai checkout ở vị trí khác, thay đường dẫn tương ứng trong các lệnh PowerShell.
+
+### Nạp CSDL thử
+
+Nạp `BTL2_SQL_TONG_HOP.sql` trước, rồi nạp `02_Trigger_INSERT.sql` trong `BTL2_P3_DEMO`. [Hướng dẫn nạp CSDL bằng sqlcmd hoặc SSMS](database/README.md) có các lệnh chạy và bước đổi tên đích trên bản SQL tạm. Nếu máy đã có `BTL2_P3_DEMO`, chạy script kiểm tra đối tượng và đối chiếu dữ liệu mẫu trong hướng dẫn trước khi dùng lại CSDL đó.
+
+Dữ liệu mẫu có 6 danh mục, 7 món, 13 size và 2 ca ngày 13/11/2026. Nếu cần dựng một bản sạch dưới tên mới để demo, làm theo [quy trình dựng lại dữ liệu demo](database/README.md#dựng-lại-dữ-liệu-demo-trước-buổi-trình-bày).
+
+### Cài và chạy backend
+
+```powershell
+Set-Location 'D:\Database_Overall\nguoi5_branch\backend'
+npm ci
+if (!(Test-Path -LiteralPath .env)) {
+    Copy-Item -LiteralPath .env.example -Destination .env
+}
+```
+
+Với Windows Auth trên máy demo, sửa `.env` thành cấu hình dưới đây. Đổi `DB_INSTANCE` theo instance của máy. `DB_TRUST_SERVER_CERTIFICATE=true` dùng cho instance thử local có chứng chỉ tự ký.
+
+```dotenv
+APP_PORT=3001
+DB_NAME=BTL2_P3_DEMO
+DB_AUTH=windows
+DB_INSTANCE=localhost\YUSHINOMI
+DB_ENCRYPT=true
+DB_TRUST_SERVER_CERTIFICATE=true
+CORS_ORIGIN=http://127.0.0.1:5173,http://localhost:5173
+```
+
+Nếu dùng SQL Auth qua TCP, chọn `DB_AUTH=sql` và cấu hình `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD` theo [tệp mẫu backend](backend/.env.example). Các biến môi trường có sẵn trong PowerShell được ưu tiên hơn giá trị trong `.env`. Giữ `.env` trên máy chạy và dùng `.env.example` để chia sẻ mẫu cấu hình.
+
+Sau khi lưu `.env`, từ thư mục `backend` chạy `npm start` và giữ terminal mở. Dùng cửa sổ PowerShell khác để kiểm tra kết nối.
+
+```powershell
+Invoke-RestMethod 'http://127.0.0.1:3001/api/health' | ConvertTo-Json -Compress
+```
+
+Khi SQL Server sẵn sàng, API trả `{"data":{"status":"ok","database":"connected"}}`.
+
+### Cài và chạy frontend
+
+Mở cửa sổ PowerShell khác và chạy các lệnh sau.
+
+```powershell
+Set-Location 'D:\Database_Overall\frontend'
+npm ci
+if (!(Test-Path -LiteralPath .env.local)) {
+    Copy-Item -LiteralPath .env.example -Destination .env.local
+}
+```
+
+Trong `.env.local`, đặt hai giá trị sau. Bỏ hoặc chú thích `VITE_N1_API_TARGET`, `VITE_N2_API_TARGET`, `VITE_N3_API_TARGET` để cả ba nhóm API đi qua một proxy.
+
+```dotenv
+VITE_API_BASE_URL=
+VITE_API_PROXY_TARGET=http://127.0.0.1:3001
+```
+
+Chạy `npm run dev` rồi mở địa chỉ Vite in ra, thường là `http://127.0.0.1:5173`. Từ trang chủ, mở ba màn hình nghiệp vụ. Tại màn hình báo cáo, chọn ngày 13/11/2026 ở cả hai ô để xem hai ca mẫu.
+
+Để chạy bản build, dừng Vite dev rồi chạy `npm run build` và `npm run preview` trong cùng thư mục `frontend`. Mở địa chỉ do preview in ra và giữ backend đang chạy. Khi chạy chế độ gọi API trực tiếp, đặt `VITE_API_BASE_URL=http://127.0.0.1:3001` và thêm đúng origin Vite vào `CORS_ORIGIN` của backend. Khởi động lại tiến trình sau khi đổi cấu hình. Xem [tài liệu bàn giao backend](nguoi5_phan3/BAN_GIAO_BACKEND_CHUNG.md).
+
+### Chạy kiểm thử tích hợp
+
+Dùng `DB_NAME=BTL2_P3_DEMO` với dữ liệu mẫu. Dừng backend bằng `Ctrl+C` để cổng `APP_PORT` sẵn sàng cho bộ kiểm thử. Sau đó chạy trong PowerShell.
+
+```powershell
+Set-Location 'D:\Database_Overall\nguoi5_branch\backend'
+npm test
+```
+
+Bộ kiểm thử tự khởi động backend, kiểm tra 12 endpoint nghiệp vụ và `/api/health`, dọn dữ liệu thử rồi đóng máy chủ và pool SQL. Kết quả đạt hiện tại là 7 phép kiểm tra với `fail 0`. Sau khi kiểm thử xong, chạy lại `npm start` để dùng giao diện.
