@@ -1,0 +1,119 @@
+.shift-report {
+  max-width: var(--layout-max-width);
+  margin-inline: auto;
+  padding: clamp(1.5rem, 5vw, 3rem) var(--layout-gutter) 1rem;
+}
+
+.shift-report h1 {
+  margin: 0 0 1.5rem;
+}
+
+.shift-report h2 {
+  margin: 0 0 .75rem;
+  font-size: 1.1rem;
+}
+
+.shift-report form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: end;
+  padding: clamp(.8rem, 2vw, 1.25rem);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-panel);
+}
+
+.shift-report label {
+  display: grid;
+  gap: .35rem;
+  min-inline-size: 0;
+  font-size: var(--text-small);
+  font-weight: 600;
+}
+
+.shift-report input,
+.shift-report button {
+  padding: var(--control-padding);
+  min-height: var(--control-height);
+  border: 1px solid var(--color-control-border);
+  border-radius: var(--radius-control);
+}
+
+.shift-report input {
+  width: 100%;
+  min-width: 0;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-weight: 400;
+}
+
+.shift-report button {
+  border-color: var(--color-primary);
+  color: var(--color-surface);
+  background: var(--color-primary);
+  cursor: pointer;
+  font-size: var(--text-small);
+  font-weight: 650;
+}
+
+.shift-report button:hover:enabled { background: var(--color-primary-hover); }
+.shift-report button:disabled { cursor: wait; }
+
+.report-results { margin-block-start: 1.5rem; }
+
+.report-table {
+  overflow-x: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-panel);
+  background: var(--color-surface);
+}
+
+.report-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.report-table caption {
+  padding: var(--cell-padding);
+  color: var(--color-muted);
+  text-align: left;
+  font-weight: 600;
+}
+
+.report-table th,
+.report-table td {
+  padding: var(--cell-padding);
+  border-bottom: 1px solid var(--color-border);
+  text-align: left;
+}
+
+.report-table th {
+  color: var(--color-muted);
+  background: var(--color-tint);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.report-table tbody tr:last-child > td { border-bottom: 0; }
+
+.report-message {
+  margin: 0;
+  padding: .65rem .9rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
+  background: var(--color-surface);
+  color: var(--color-muted);
+  overflow-wrap: anywhere;
+}
+
+.report-error {
+  border-color: var(--color-danger-border);
+  color: var(--color-danger);
+  background: var(--color-danger-bg);
+}
+
+@media (max-width: 32rem) {
+  .shift-report label,
+  .shift-report form button { width: 100%; }
+}

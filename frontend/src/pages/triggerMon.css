@@ -1,0 +1,182 @@
+.trigger-mon {
+  max-width: var(--layout-max-width);
+  margin-inline: auto;
+  padding: clamp(1.5rem, 5vw, 3rem) var(--layout-gutter) 1rem;
+}
+
+.trigger-mon h1,
+.trigger-mon h2 {
+  margin: 0;
+  line-height: 1.2;
+}
+
+.trigger-mon h1 { font-size: var(--text-title); }
+.trigger-mon h2 { font-size: 1.1rem; margin-bottom: .8rem; }
+
+.trigger-mon-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: .8rem;
+  margin-bottom: 1rem;
+}
+
+.trigger-mon fieldset {
+  min-inline-size: 0;
+  margin: 0;
+  padding: clamp(.8rem, 2vw, 1.25rem);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-panel);
+  background: var(--color-surface);
+}
+
+.trigger-mon legend {
+  padding: 0 .35rem;
+  font-weight: 650;
+}
+
+.trigger-mon-fields {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: .65rem;
+}
+
+.trigger-mon-fields label {
+  display: grid;
+  flex: 1 1 8.5rem;
+  min-inline-size: 0;
+  gap: .35rem;
+  font-size: var(--text-small);
+  font-weight: 600;
+}
+
+.trigger-mon input,
+.trigger-mon select,
+.trigger-mon button {
+  border: 1px solid var(--color-control-border);
+  border-radius: var(--radius-control);
+  background: var(--color-surface);
+  color: inherit;
+  padding: var(--control-padding);
+  min-height: var(--control-height);
+  font: inherit;
+}
+
+.trigger-mon input,
+.trigger-mon select {
+  min-width: 0;
+  width: 100%;
+  font-weight: 400;
+}
+
+.trigger-mon button {
+  border-color: var(--color-border);
+  color: var(--color-primary);
+  cursor: pointer;
+  font-size: var(--text-small);
+  font-weight: 650;
+}
+
+.trigger-mon button:hover:not(:disabled) {
+  background: var(--color-tint);
+  border-color: var(--color-primary);
+}
+
+.trigger-mon button:disabled {
+  cursor: default;
+}
+
+.trigger-mon .trigger-mon-primary {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-surface);
+}
+
+.trigger-mon .trigger-mon-primary:hover:enabled {
+  background: var(--color-primary-hover);
+}
+
+.trigger-mon .trigger-mon-delete {
+  color: var(--color-danger);
+}
+
+.trigger-mon .trigger-mon-delete:hover:enabled {
+  background: var(--color-danger-bg);
+  border-color: var(--color-danger);
+}
+
+.trigger-mon-note,
+.trigger-mon-meta {
+  color: var(--color-muted);
+  font-size: var(--text-small);
+}
+
+.trigger-mon-note { margin: .6rem 0 0; }
+.trigger-mon-meta { margin-bottom: .6rem; }
+
+.trigger-mon-content {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.trigger-mon-table {
+  overflow-x: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-panel);
+  background: var(--color-surface);
+}
+
+.trigger-mon table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.trigger-mon th,
+.trigger-mon td {
+  padding: var(--cell-padding);
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+  overflow-wrap: anywhere;
+}
+
+.trigger-mon thead th {
+  color: var(--color-muted);
+  background: var(--color-tint);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.trigger-mon-selected { background: var(--color-success-bg); }
+.trigger-mon tr:last-child > td,
+.trigger-mon tbody tr:last-child > th { border-bottom: 0; }
+.trigger-mon small { display: block; color: var(--color-muted); }
+.trigger-mon-actions { white-space: nowrap; }
+.trigger-mon-actions button + button { margin-left: .3rem; }
+.trigger-mon-size-form { margin-top: .9rem; }
+
+.trigger-mon-error,
+.trigger-mon-success {
+  margin: 0 0 .875rem;
+  padding: .65rem .9rem;
+  border: 1px solid var(--color-success-border);
+  border-radius: var(--radius-control);
+  background: var(--color-success-bg);
+  color: var(--color-primary);
+  overflow-wrap: anywhere;
+}
+
+.trigger-mon-error {
+  border-color: var(--color-danger-border);
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
+}
+
+.trigger-mon-size-form .trigger-mon-error { margin: .75rem 0 0; }
+
+@media (max-width: 64rem) {
+  .trigger-mon-content { grid-template-columns: minmax(0, 1fr); }
+}
