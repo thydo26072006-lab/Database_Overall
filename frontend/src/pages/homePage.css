@@ -1,0 +1,83 @@
+.home-page {
+  max-width: var(--layout-max-width);
+  margin-inline: auto;
+  padding: clamp(1.5rem, 5vw, 3rem) var(--layout-gutter) 1rem;
+}
+
+.home-intro {
+  padding: clamp(1.25rem, 5vw, 3rem);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-panel);
+  background: var(--color-tint);
+}
+
+.home-intro h1 {
+  max-inline-size: 26ch;
+  margin: 0;
+  color: var(--color-primary);
+}
+
+.home-intro p {
+  max-inline-size: 62ch;
+  margin: .8rem 0 0;
+}
+
+.home-page h2 {
+  margin: 1.5rem 0 .65rem;
+  font-size: 1.2rem;
+}
+
+.home-features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.home-card {
+  position: relative;
+  padding: 1.25rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-panel);
+  background: var(--color-surface);
+}
+
+.home-card h3 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.home-card h3 a::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+}
+
+.home-card:focus-within,
+.home-card:hover {
+  border-color: var(--color-primary);
+}
+
+.home-card p {
+  margin: .6rem 0 .9rem;
+  color: var(--color-muted);
+}
+
+.home-sql {
+  display: grid;
+  gap: .25rem;
+  margin: 0;
+  padding: .75rem 0 0;
+  border-top: 1px solid var(--color-border);
+  list-style: none;
+  overflow-wrap: anywhere;
+  font-size: var(--text-small);
+}
+
+.home-architecture p {
+  max-inline-size: 75ch;
+  margin: 0;
+  color: var(--color-muted);
+}
